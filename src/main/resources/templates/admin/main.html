@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--    <link rel="stylesheet" href="css/style.css">-->
+    <link rel="shortcut icon" href="favicon/favicon.ico" type="image/x-icon">
+    <link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-gothic.css" rel="stylesheet">
+
+    <title>관리자 페이지</title>
+    <!-- http://localhost:8080/adminlogin -->
+</head>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        background: linear-gradient(rgba(227, 133, 133, 0.61), rgba(208, 32, 32, 0.61));
+        margin: 0;
+        padding: 0;
+        height: 100vh; /* 화면 높이에 맞춤 */
+        display: flex;
+        justify-content: center; /* 가로 방향 중앙 정렬 */
+        align-items: center;
+        font-family: 'Nanum Gothic', sans-serif;
+    }
+
+    .tabs-container {
+        width: 90%;
+        max-width: 1300px;
+        background: white;
+        border-radius: 60px;
+        box-shadow: 0 4px 6px white;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .tabs {
+        display: flex;
+        justify-content: space-around;
+        border-bottom: 2px solid #ccc;
+        margin-bottom: 20px;
+    }
+
+    .tabs button {
+        flex: 1;
+        padding: 10px 20px;
+        background: transparent;
+        border: none;
+        border-bottom: 3px solid transparent;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: border-bottom 0.3s, color 0.3s;
+    }
+
+    .tabs button.active {
+        border-bottom: 3px solid #e73434;
+        color: #e73434;
+    }
+
+    .tab-content {
+        display: none;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+
+    .tab-content .container {
+        padding: 20px;
+        background: #f8f8f8;
+        border-radius: 50px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    .tab-content .container h2 {
+        margin-bottom: 15px;
+    }
+
+    .tab-content h2 {
+        margin-bottom: 20px; /* h2 아래에 간격 추가 */
+    }
+
+    .tab-content .container button {
+        display: block;
+        margin: 10px auto;
+        padding: 10px 20px;
+        background-color: #fa8d8d;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .tab-content .container button:hover {
+        background-color: #e83737;
+    }
+
+    /* 서브 탭 스타일 */
+    .sub-tabs {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+        gap: 10px;
+    }
+
+    .sub-tab-button {
+        padding: 8px 16px;
+        background: transparent;
+        border: 2px solid #ea5656;
+        border-radius: 5px;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    .sub-tab-button.active {
+        background: #ea5656;
+        color: white;
+    }
+
+    .sub-tab-content {
+        display: none;
+    }
+
+    .sub-tab-content.active {
+        display: block;
+    }
+
+
+    .containerP, .containerT {
+        padding: 80px 10px;
+        width: 100%;
+        max-width: 500px;
+        border-radius: 80px;
+        display: flex;
+        align-items: center; /* 버튼들이 가로로 중앙 정렬 */
+        justify-content: center;
+        gap: 30px;
+        flex-direction: column;
+    }
+
+</style>
+
+<body>
+<div class="tabs-container">
+    <div class="tabs">
+        <button class="tab-button active" data-tab="tab-1">회원 관리</button>
+        <!--<button class="tab-button" data-tab="tab-2">결제 관리</button>-->
+        <button class="tab-button" data-tab="tab-3">문의 관리</button>
+    </div>
+
+    <div id="tab-1" class="tab-content active">
+        <h2>회원 관리</h2>
+        <div class="sub-tabs">
+            <!-- 학부모와 선생님을 선택할 수 있는 서브 탭 -->
+            <button class="sub-tab-button active" data-sub-tab="parent-management">학부모</button>
+            <button class="sub-tab-button" data-sub-tab="teacher-management">선생님</button>
+        </div>
+
+        <!-- 학부모 관리 콘텐츠 -->
+        <div id="parent-management" class="sub-tab-content active">
+            <div class="container">
+                <h3>학부모 관리</h3>
+                <!--<button id="manageP">학부모 관리</button>-->
+                <button id="applP">학습 신청서 확인</button>
+                <button id="counselP">상담 신청서 확인</button>
+            </div>
+        </div>
+
+        <!-- 선생님 관리 콘텐츠 -->
+        <div id="teacher-management" class="sub-tab-content">
+            <div class="container">
+                <h3>선생님 관리</h3>
+                <button id="addT">&nbsp;&nbsp;선생님 등록&nbsp;&nbsp;</button>
+                <button id="manageT">&nbsp;&nbsp;선생님 관리&nbsp;&nbsp;</button>
+                <button id="volunteerT">입사지원 관리</button>
+                <button id="certiT">자격인증 관리</button>
+                <button id="addScheduleT">&nbsp;&nbsp;&nbsp;&nbsp;일정 저장&nbsp;&nbsp;&nbsp;&nbsp;</button>
+                <button id="scheduleT">&nbsp;&nbsp;&nbsp;&nbsp;일정 관리&nbsp;&nbsp;&nbsp;&nbsp;</button>
+            </div>
+        </div>
+    </div>
+
+    <!--<div id="tab-2" class="tab-content">
+        <h2>결제 관리</h2>
+        <div class="container">
+            <button id="classPayment">결제 목록</button>
+            &lt;!&ndash;<button id="manageWorksheets">학습지 목록</button>&ndash;&gt;
+            &lt;!&ndash;<button id="addWorksheet">학습지 추가</button>&ndash;&gt;
+        </div>
+    </div>-->
+
+    <div id="tab-3" class="tab-content">
+        <h2>문의 내용</h2>
+        <div class="container">
+            <!--<button id="orderBooks">선생님 문의</button>-->
+            <button id="pFaqBoard">문의 목록</button>
+            <!--            <button id="trackOrders">주문 내역</button>-->
+        </div>
+    </div>
+</div>
+
+</body>
+
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+<script>
+
+    // 탭 버튼 클릭 이벤트
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // 모든 버튼에서 'active' 제거
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            // 현재 버튼에 'active' 추가
+            button.classList.add('active');
+
+            // 모든 콘텐츠 숨김
+            tabContents.forEach(content => content.classList.remove('active'));
+            // 현재 버튼의 콘텐츠 보여줌
+            const tabId = button.getAttribute('data-tab');
+            document.getElementById(tabId).classList.add('active');
+        });
+    });
+
+    // 서브 탭 버튼 클릭 이벤트
+    const subTabButtons = document.querySelectorAll('.sub-tab-button');
+    const subTabContents = document.querySelectorAll('.sub-tab-content');
+
+    subTabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // 모든 서브 탭 버튼의 활성화 상태 제거
+            subTabButtons.forEach(btn => btn.classList.remove('active'));
+            // 현재 서브 탭 버튼 활성화
+            button.classList.add('active');
+
+            // 모든 서브 탭 콘텐츠 숨김
+            subTabContents.forEach(content => content.classList.remove('active'));
+            // 선택된 서브 탭 콘텐츠 표시
+            const subTabId = button.getAttribute('data-sub-tab');
+            document.getElementById(subTabId).classList.add('active');
+        });
+    });
+
+    // 입사신청 목록
+    $('#volunteerT').click(()=> {
+        location.href = "/resume/list";
+    });
+
+    // 선생님 문의 목록
+    $('#tFaqBoard').click(()=>{
+        location.href = "/board/list";
+    });
+
+    // 선생님 등록
+    $('#addT').click(() => {
+        location.href = "/addTForm";
+    });
+
+    // 선생님 등록
+    $('#manageT').click(() => {
+        location.href = "/manageTList";
+    });
+
+    // 상담신청 목록
+    $('#counselP').click(()=> {
+        location.href = "/signup/list";
+    });
+
+    // 학부모 문의 목록
+    $('#pFaqBoard').click(()=>{
+        location.href = "/board/list";
+    });
+
+    // 학습신청 목록
+    $('#applP').click(()=>{
+        location.href = "/admin/clReqList"
+    });
+
+    $('#certiT').click(() => {
+        location.href = "/admin/specList"
+    });
+
+    // 선생님 일정 관리
+    $('#scheduleT').click(() => {
+        location.href = "/admin/scheduleList"
+    });
+
+    $('#addScheduleT').click(() => {
+       location.href = "/maptest";
+    });
+
+
+</script>
+
+</html>

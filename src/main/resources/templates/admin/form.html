@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--<link rel="stylesheet" href="css/style.css">-->
+    <link rel="shortcut icon" href="favicon/favicon.ico" type="image/x-icon">
+
+    <title>신규 선생님 등록</title>
+
+</head>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .wrap {
+        background: white;
+        border-radius: 20px;
+        padding: 30px 50px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 600px;
+        max-height: 80vh; /* 화면의 80% 높이로 제한 */
+        overflow-y: auto; /* 세로 스크롤 활성화 */
+    }
+
+    body {
+        background: linear-gradient(rgba(227, 133, 133, 0.61), rgba(208, 32, 32, 0.61));
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: 'Arial', sans-serif;
+        overflow: hidden; /* 페이지 전체의 스크롤바 방지 */
+    }
+
+    /* 스크롤바 커스터마이징 */
+    .wrap::-webkit-scrollbar {
+        width: 8px; /* 스크롤바 너비 */
+    }
+
+    .wrap::-webkit-scrollbar-thumb {
+        background-color: rgba(189, 7, 7, 0.73); /* 스크롤바 색상 */
+        border-radius: 8px;
+    }
+
+    .wrap::-webkit-scrollbar-thumb:hover {
+        background-color: rgba(189, 7, 7, 0.86);
+    }
+
+    .wrap::-webkit-scrollbar-track {
+        background-color: #f4f4f4; /* 스크롤바 트랙 색상 */
+        border-radius: 8px;
+    }
+
+
+    h1 {
+        text-align: center;
+        color: #d75b5b;
+        margin-bottom: 20px;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    label {
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 5px;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="email"],
+    input[type="number"],
+    input[type="file"],
+    textarea {
+        width: 100%;
+        padding: 10px;
+        border: 2px solid #ddd;
+        border-radius: 5px;
+        font-size: 14px;
+        transition: border-color 0.3s;
+    }
+
+    input[type="text"]:focus,
+    input[type="password"]:focus,
+    input[type="email"]:focus,
+    input[type="number"]:focus,
+    textarea:focus {
+        border-color: #d02020;
+        outline: none;
+    }
+
+    div {
+        margin-bottom: 15px;
+    }
+
+    input[type="radio"],
+    input[type="checkbox"] {
+        margin-right: 5px;
+        transform: scale(1.2); /* 크기 확대 */
+        cursor: pointer;
+    }
+
+    button {
+        background-color: rgba(189, 7, 7, 0.73); /* 스크롤바 색상 */
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        margin-top: 20px;
+    }
+
+    button:hover {
+        background-color: rgba(189, 7, 7, 0.86); /* 호버 시 색상 */
+    }
+
+
+    div > span {
+        font-weight: bold;
+        color: #333;
+        display: block;
+        margin-bottom: 8px;
+    }
+
+    input[type="file"] {
+        padding: 5px;
+        border: none;
+        font-size: 14px;
+        background: #f4f4f4;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+    textarea {
+        min-height: 100px;
+    }
+
+
+</style>
+
+<body>
+<div class="wrap">
+    <h1>선생님 등록</h1>
+    <form th:action="@{/addT}" method="post" enctype="multipart/form-data">
+        <label for="tId">ID:</label>
+        <input type="text" id="tId" name="tId" required/>
+        <br>
+
+        <label for="tPass">비밀번호:</label>
+        <input type="password" id="tPass" name="tPass" required/>
+        <br>
+
+        <label for="tName">이름:</label>
+        <input type="text" id="tName" name="tName" required/>
+        <br>
+
+        <label for="tPhone">연락처:</label>
+        <input type="text" id="tPhone" name="tPhone" required/>
+        <br>
+
+        <label for="tEmail">이메일:</label>
+        <input type="email" id="tEmail" name="tEmail" required/>
+        <br>
+
+        <div>
+            <span>성별:</span>
+            <label for="m">남</label><input type="radio" id="m" name="tGender" value="남" required/>
+            <label for="f">여</label><input type="radio" id="f" name="tGender" value="여" required/>
+        </div>
+        <br>
+
+        <label for="tEdu">학력:</label>
+        <input type="text" id="tEdu" name="tEdu" required/>
+        <br>
+
+        <label for="tProfile">프로필:</label>
+        <input type="file" id="tProfile" name="tProfile"/>
+        <br/> <img id="preImage" width="150px"/><br>
+
+
+        <label for="tArea">지역:</label>
+        <input type="text" id="tArea" name="tArea"/>
+        <br>
+
+        <label for="tGrade">맡을 학년:</label>
+        <input type="text" id="tGrade" name="tGrade"/>
+        <br>
+
+        <div>
+            <span>과목:</span>
+            <label for="kor">국어</label><input type="checkbox" id="kor" name="tSubject" value="국어"/>
+            <label for="eng">영어</label><input type="checkbox" id="eng" name="tSubject" value="영어"/>
+            <label for="math">수학</label><input type="checkbox" id="math" name="tSubject" value="수학"/>
+        </div>
+        <br>
+
+        <div>
+            <span>레벨:</span>
+            <label for="Basic">초급</label><input type="checkbox" id="Basic" name="tLevel" value="초급"/>
+            <label for="Intermediate">중급</label><input type="checkbox" id="Intermediate" name="tLevel" value="중급"/>
+            <label for="advanced">심화</label><input type="checkbox" id="advanced" name="tLevel" value="심화"/>
+        </div>
+        <br>
+
+        <div>
+            <span>휴무일:</span>
+            <label for="mon">월요일</label><input type="checkbox" id="mon" name="tRestDay" value="월요일"/>
+            <label for="tue">화요일</label><input type="checkbox" id="tue" name="tRestDay" value="화요일"/>
+            <label for="wed">수요일</label><input type="checkbox" id="wed" name="tRestDay" value="수요일"/>
+            <label for="thu">목요일</label><input type="checkbox" id="thu" name="tRestDay" value="목요일"/>
+            <label for="fri">금요일</label><input type="checkbox" id="fri" name="tRestDay" value="금요일"/>
+            <label for="sat">토요일</label><input type="checkbox" id="sat" name="tRestDay" value="토요일"/>
+            <label for="sun">일요일</label><input type="checkbox" id="sun" name="tRestDay" value="일요일"/>
+        </div>
+        <br>
+
+        <label for="tDesc">선생님 소개:</label>
+        <textarea id="tDesc" name="tDesc"></textarea>
+        <br>
+
+
+        <button type="submit">신규 선생님 등록</button>
+    </form>
+</div>
+</body>
+
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+        crossorigin="anonymous"></script>
+<script>
+    // 프로필 사진 미리보기
+    $('#tProfile').on('change', function (event) {
+        let file = event.target.files[0];
+        let reader = new FileReader();
+
+        // 미리보기 경로 설정
+        reader.onload = function (e) {
+            $('#preImage').attr('src', e.target.result);
+        }
+        reader.readAsDataURL(file);
+    })
+</script>
+
+</html>

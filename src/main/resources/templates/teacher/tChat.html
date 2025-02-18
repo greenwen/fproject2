@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>방.학_선생님채팅</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.5.1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="shortcut icon" href="/favicon/favicon.ico" type="image/x-icon">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-gothic.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Nanum Gothic', sans-serif;
+        }
+
+        #chatMessages {
+            max-height: 400px; /* 채팅창 최대 높이 */
+            overflow-y: auto;  /* 세로 스크롤 활성화 */
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+        .container {
+            max-width: 900px;
+            margin: 50px auto;
+            background-color: #fff;
+            border-radius: 10px;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .member-list {
+            width: 25%;
+            background-color: #2f3640;
+            color: #f5f6fa;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .member-list h3 {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 18px;
+            color: #f5f6fa;
+        }
+
+        .member-list ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .member-list li {
+            padding: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border-bottom: 1px solid #444;
+        }
+
+        /* 마우스를 올릴 때 색 변경 */
+        .member-list li:hover {
+            background-color: #57606f;
+        }
+
+        /* 클릭 시 선택된 상태 */
+        .member-list li.active {
+            background-color: #57606f; /* 하늘색 */
+        }
+
+
+        .chat-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: #f5f6fa;
+        }
+
+        .chat-header {
+            background-color: #68d284;
+            color: white;
+            padding: 10px 15px;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-messages .message {
+            margin-bottom: 15px;
+            max-width: 70%;
+            padding: 10px 15px;
+            border-radius: 18px;
+            font-size: 16px;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+
+        .chat-messages .self {
+            align-self: flex-end;
+            background-color: #68d284;
+            color: #fff;
+            border-bottom-right-radius: 2px;
+        }
+
+        .chat-messages .other {
+            align-self: flex-start;
+            background-color: #e0e0e0;
+            color: #333;
+            border-bottom-left-radius: 2px;
+        }
+
+        .send-message {
+            display: flex;
+            padding: 15px;
+            background-color: #fff;
+            border-top: 1px solid #ddd;
+        }
+
+        .send-message input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            font-size: 16px;
+        }
+
+        .send-message button {
+            margin-left: 10px;
+            padding: 10px 20px;
+            background-color: #68d284;
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .send-message button:hover {
+            background-color: #38a428;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <nav>
+        <div th:if="${session.teacherLoginId eq null}">
+            <ul>
+                <li><a href="/resume/rwrite">입사지원</a></li>
+                <li><a href="/bWriteFormT">문의</a></li>
+            </ul>
+        </div>
+        <!--    <a th:href="@{/pView/{pId}(pId=${session.parentLoginId})}" id="parent">마이 페이지</a>-->
+        <div th:if="${session.teacherLoginId ne null}">
+            <ul>
+                <li><a th:href="@{/tMySchedule/{tId}(tId=${session.teacherLoginId})}">스케줄</a></li>
+                <li><a th:href="@{/tStudents/{tId}(tId=${session.teacherLoginId})}">학생관리</a></li>
+                <li><a th:href="@{/tMyInfo/{tId}(tId=${session.teacherLoginId})}">마이 페이지</a></li>
+                <li><a href="/bWriteFormT">문의</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="logo">
+        <a href="/teacher/Tmain"><img src="/File/logo_white.png" alt="로고"></a>
+    </div>
+
+    <div th:if="${session.teacherLoginId eq null}">
+        <a id="login">로그인</a>
+    </div>
+
+    <div th:if="${session.teacherLoginId ne null}">
+        <input type="hidden" id="loginId" name="loginId" th:value="${session.teacherLoginId}"/>
+        <!--    <button id="teacher">마이 페이지</button>-->
+        <a href="/tLogout" id="logout">로그아웃</a>
+    </div>
+</header>
+
+<!--<div class="container">-->
+<!--    <div class="chat-box">-->
+<!--        &lt;!&ndash; 학생 목록 &ndash;&gt;-->
+<!--        <div class="member-list">-->
+<!--            <h3>학생 목록</h3>-->
+<!--            <ul id="studentList">-->
+<!--                <li th:each="student : ${studentList}"-->
+<!--                    th:id="${student.sId}"-->
+<!--                    th:data-name="${student.sName}"-->
+<!--                    onclick="openChatRoom(this)">-->
+<!--                    <span th:text="${student.sName}"></span>-->
+<!--                </li>-->
+<!--            </ul>-->
+
+<!--        </div>-->
+<!--        &lt;!&ndash; 채팅 내용 &ndash;&gt;-->
+<!--        <div class="chat-content">-->
+<!--            <h3 id="chatWith">채팅 상대: 없음</h3>-->
+<!--            <ul class="chat-messages" id="chatMessages"></ul>-->
+<!--            <div class="send-message">-->
+<!--                <input type="text" id="messageInput" placeholder="메시지를 입력하세요..."-->
+<!--                       onkeypress="handleKeyPress(event)"/>-->
+<!--                <button onclick="sendPrivateMessage()">전송</button>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<div class="container">
+    <!-- 학생 목록 -->
+    <div class="member-list">
+        <h3>학생 목록</h3>
+        <ul id="studentList">
+            <li th:each="student : ${studentList}"
+                th:id="${student.sId}"
+                th:data-name="${student.sName}"
+                onclick="openChatRoom(this)">
+                <span th:text="${student.sName}"></span>
+            </li>
+        </ul>
+    </div>
+
+    <!-- 채팅 내용 -->
+    <div class="chat-content">
+        <div class="chat-header" id="chatWith">채팅 상대: 없음</div>
+        <div class="chat-messages" id="chatMessages"></div>
+        <div class="send-message">
+            <input type="text" id="messageInput" placeholder="메시지를 입력하세요..."
+                   onkeypress="handleKeyPress(event)"/>
+            <button onclick="sendPrivateMessage()">➡</button>
+        </div>
+    </div>
+</div>
+
+<footer class="common-footer">
+    <div class="inner-footer">
+        <div class="footer-wrap">
+            <div class="info-cont">
+                <p class="info-txt">고객센터 <strong>1588-9956</strong> 평일 09:00~18:00(공휴일 제외)</p>
+                <p class="address">※고객센터(콜센터) 이용 시 통신요금이 부과 됩니다.</p>
+                <ul class="footer-menu">
+                    <li style="color:deepskyblue; font-weight:bold;"><a href="/Etc/Privacy">개인정보 처리방침</a></li>
+                    <li><a href="/Etc/Clause">서비스약관</a></li>
+                    <li><a href="/Inquiry/OnlineInquiry">고객센터</a></li>
+                    <li><a href="/Customer/BusinessWrite">제휴문의</a></li>
+                    <li><a href="/Etc/SiteMap">사이트맵</a></li>
+                </ul>
+                <address class="address">
+                    인천 미추홀구 매소홀로488번길 6-32 태승빌딩 5층 (주)방학
+                    <span>통신판매업 신고 : 제 2025-인천미추홀구-1567호</span>
+                </address>
+            </div>
+            <div class="etc-cont">
+                <!-- [s] 2024.06.11 SNS 바로가기 수정 -->
+                <div class="btn-group sns">
+                    <p class="sns-title">SNS</p>
+                    <a href="https://www.instagram.com" title="새창열기" target="_blank" class="sns-btn instar"><i
+                            class="fa-brands fa-instagram"></i><span class="hide"> 인스타그램</span></a>
+                    <a href="https://www.youtube.com" title="새창열기" target="_blank" class="sns-btn instar"><i
+                            class="fa-brands fa-youtube"></i><span class="hide"> 유튜브</span></a>
+                    <a href="https://section.blog.naver.com" title="새창열기" target="_blank" class="sns-btn instar"><i
+                            class="fa-brands fa-facebook-f"></i><span class="hide"> 페이스북</span></a>
+
+                </div>
+            </div>
+        </div>
+        <div class="copy-cont">
+            Copyright © Bang.Hak All Right Reserved
+        </div>
+
+    </div>
+</footer>
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+        crossorigin="anonymous"></script>
+<script>
+    // 슬라이드 배너 기능
+    const slides = document.querySelector('.slides');
+    const slideItems = document.querySelectorAll('.slide');
+    const slideCount = slideItems.length;
+
+    let currentIndex = 0;
+    let autoSlideInterval;
+
+    // 슬라이드 클론 생성 (앞뒤에 추가)
+    const firstClone = slideItems[0].cloneNode(true);
+    const lastClone = slideItems[slideCount - 1].cloneNode(true);
+
+    slides.appendChild(firstClone);
+    slides.insertBefore(lastClone, slides.firstChild);
+
+    const updatedSlideCount = document.querySelectorAll('.slide').length;
+
+    // 슬라이드 컨테이너 너비 설정
+    slides.style.width = `${updatedSlideCount * 100}%`;
+    slides.style.transform = `translateX(-100%)`; // 클론 때문에 1번째 슬라이드로 위치 이동
+
+    // 슬라이드 이동 함수
+    function updateSlidePosition() {
+        slides.style.transition = 'transform 0.5s ease-in-out';
+        slides.style.transform = `translateX(-${(currentIndex + 1) * 100}%)`;
+    }
+
+    // 슬라이드 재설정 함수 (클론에서 실제 슬라이드로 이동)
+    function resetSlidePosition() {
+        slides.style.transition = 'none';
+        if (currentIndex === -1) {
+            currentIndex = slideCount - 1; // 마지막 슬라이드로 이동
+            slides.style.transform = `translateX(-${(currentIndex + 1) * 100}%)`;
+        } else if (currentIndex === slideCount) {
+            currentIndex = 0; // 첫 번째 슬라이드로 이동
+            slides.style.transform = `translateX(-${(currentIndex + 1) * 100}%)`;
+        }
+    }
+
+    // 다음 슬라이드로 이동
+    function goToNextSlide() {
+        currentIndex++;
+        updateSlidePosition();
+        setTimeout(resetSlidePosition, 500); // 애니메이션이 끝난 후 재설정
+    }
+
+    // 이전 슬라이드로 이동
+    function goToPrevSlide() {
+        currentIndex--;
+        updateSlidePosition();
+        setTimeout(resetSlidePosition, 500); // 애니메이션이 끝난 후 재설정
+    }
+
+    // 버튼 클릭 이벤트
+    document.querySelector('.next').addEventListener('click', () => {
+        goToNextSlide();
+        resetAutoSlide();
+    });
+
+    document.querySelector('.prev').addEventListener('click', () => {
+        goToPrevSlide();
+        resetAutoSlide();
+    });
+
+    // 자동 슬라이드 시작
+    function startAutoSlide() {
+        autoSlideInterval = setInterval(goToNextSlide, 4000); // 4초마다 이동
+    }
+
+    // 자동 슬라이드 재설정
+    function resetAutoSlide() {
+        clearInterval(autoSlideInterval);
+        startAutoSlide();
+    }
+
+    // 초기화
+    startAutoSlide();
+
+    // 스크롤 시 애니매이션 효과 추가
+    document.addEventListener("DOMContentLoaded", () => {
+        const header = document.querySelector(".about-header");
+        const aboutContents = document.querySelectorAll(".background-shape1,.about-content");
+        const teacherSection = document.querySelector(".teacher");  // teacher section 추가
+        const teacherContent = document.querySelectorAll(".background-shape2, .about-teacher, .about-teacher-content");  // 관련 요소들 추가
+
+        const handleScroll = () => {
+            // Header 애니메이션 처리
+            const headerRect = header.getBoundingClientRect();
+            if (headerRect.top < window.innerHeight - 100) {
+                header.classList.add("visible");
+            }
+
+            // About Content 애니메이션 처리
+            if (header.classList.contains("visible")) {
+                aboutContents.forEach((content) => {
+                    const rect = content.getBoundingClientRect();
+                    if (rect.top < window.innerHeight - 100) {
+                        content.classList.add("visible");
+                    }
+                });
+            }
+
+            // Teacher Section 애니메이션 처리
+            const teacherRect = teacherSection.getBoundingClientRect();
+            if (teacherRect.top < window.innerHeight - 100) {
+                teacherContent.forEach((content) => {
+                    content.classList.add("visible");
+                });
+            }
+        };
+
+        window.addEventListener("scroll", handleScroll);
+
+        // 초기 상태 확인
+        handleScroll();
+    });
+
+    // 로그인, 회원가입 등 기본 기능
+    let loginId = $("#loginId").val();
+
+    $('#logout').click(() => {
+        location.href = '/pLogout';
+    });
+
+    $('#teacher').click(() => {
+        location.href = '/tView/' + loginId;
+    });
+
+    $('#login').click(() => {
+        location.href = '/loginFormT';
+    });
+
+    $('#write').click(() => {
+        location.href = "/bWriteForm";
+    });
+
+    // $('#resume').click(() => {
+    //     location.href = "/resume/rwrite";
+    // });
+
+    $('#resumeList').click(() => {
+        location.href = "/resume/list";
+    });
+
+</script>
+
+
+<script>
+    let stompClient = null;
+    let userData = {
+        username: document.getElementById('loginId').value,
+        connected: false
+    };
+    let currentPrivateChat = '';
+
+    // 페이지 로드 시 실행
+    window.onload = function () {
+        if (userData.username) {
+            connect(); // WebSocket연결
+        } else {
+            alert("로그인이 필요합니다.");
+            location.href = '/tLoginForm';
+        }
+    };
+
+
+    function connect() {
+        if (stompClient !== null && stompClient.connected) {
+            console.log("[WebSocket] 이미 연결되어 있음. 재연결 불필요");
+            return;
+        }
+
+        const socket = new SockJS('/ws');
+        stompClient = Stomp.over(socket);
+
+        stompClient.connect({}, function () {
+            console.log("[WebSocket] 연결 성공");
+            stompClient.subscribe(`/user/${userData.username}/private-message`, onPrivateMessage);
+            console.log("[WebSocket] 구독 완료");
+        }, function (error) {
+            console.error("[WebSocket 오류] 연결 실패:", error);
+            setTimeout(connect, 3000); // 3초 후 재연결 시도
+        });
+    }
+
+
+
+    function showMessage(message, containerId, messageClass) {
+        const chatMessages = document.getElementById(containerId);
+
+        // ✅ 동일한 메시지가 연속해서 추가되는지 확인
+        const lastMessage = chatMessages.lastChild;
+        if (lastMessage && lastMessage.textContent.includes(message.message)) {
+            console.warn("[경고] 동일한 메시지 감지, 추가 안함:", message);
+            return;
+        }
+
+        const messageElement = document.createElement('div');
+        messageElement.className = `message ${messageClass}`;
+        messageElement.textContent = `[${message.senderName}] ${message.message}`;
+
+        chatMessages.appendChild(messageElement);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+
+
+
+    function onPrivateMessage(payload) {
+        const message = JSON.parse(payload.body);
+        const tId = document.getElementById('loginId').value; // 현재 로그인한 선생님 ID
+
+        console.log("[WebSocket] 수신된 메시지:", message);
+
+        // ✅ 현재 채팅 상대가 메시지의 송신자 또는 수신자인 경우만 표시
+        if (message.senderName === currentPrivateChat || message.receiverName === currentPrivateChat) {
+            // ✅ 중복 메시지 방지
+            const chatMessages = document.getElementById('chatMessages');
+            const lastMessage = chatMessages.lastChild;
+
+            if (lastMessage && lastMessage.textContent.includes(message.message)) {
+                console.warn("[경고] 중복 메시지 감지, 표시 안함:", message);
+                return;
+            }
+
+            // ✅ 메시지 스타일 적용
+            const messageClass = message.senderName === tId ? 'self' : 'other';
+            showMessage(message, 'chatMessages', messageClass);
+        }
+    }
+
+    function onConnected() {
+        if (!stompClient.alreadySubscribed) {
+            stompClient.subscribe(`/user/${userData.username}/private-message`, onPrivateMessage);
+            stompClient.alreadySubscribed = true; // 중복 방지 플래그
+            console.log("WebSocket 구독 완료");
+        }
+    }
+    function onError(error) {
+        console.error('WebSocket 연결 오류:', error);
+    }
+
+    function addChatRoom(sId) {
+        const studentList = document.getElementById('studentList');
+        const newStudent = document.createElement('li');
+        newStudent.id = sId;
+        newStudent.textContent = sId;
+        newStudent.onclick = function () {
+            openChatRoom(this);
+        };
+        studentList.appendChild(newStudent);
+    }
+
+    // Enter키로 메시지 전송
+    function handleKeyPress(event) {
+        if (event.key === 'Enter') {
+            sendPrivateMessage();
+            event.preventDefault();
+        }
+    }
+
+    // 최종코드임
+    function sendPrivateMessage() {
+        const messageInput = document.getElementById('messageInput');
+        const messageContent = messageInput.value.trim();
+        const tId = document.getElementById('loginId').value; // 현재 로그인한 선생님 ID
+        const sId = currentPrivateChat; // 선택한 학생 ID
+
+
+        if (messageContent && sId) {
+            const chatMessage = {
+                senderName: tId, // 선생님이 보낸 메시지
+                receiverName: sId, // 선택한 학생이 받은 메시지
+                message: messageContent,
+                date: new Date().toISOString(),
+                status: "MESSAGE"
+            };
+            console.log("[디버깅] 보내는 메시지:", chatMessage);
+
+            // 서버로 메시지 전송
+            stompClient.send('/app/private-message', {}, JSON.stringify(chatMessage));
+
+            // 화면에 메시지 표시
+            showMessage(chatMessage, 'chatMessages', 'self');
+            messageInput.value = '';
+        } else {
+            alert("학생을 선택하고 메시지를 입력해주세요.");
+        }
+    }
+
+    function openChatRoom(element) {
+        const sId = element.id; // 선택한 학생의 ID
+        const sName = element.textContent; // 선택한 학생 이름
+        const tId = document.getElementById('loginId').value; // 현재 로그인한 선생님 ID
+
+        document.getElementById('chatWith').textContent = `채팅 상대: ${sName}`;
+        currentPrivateChat = sId; // 현재 대화 중인 학생 ID 설정
+
+        console.log("[디버깅] 채팅방 열기 - 학생 ID(sId):", sId, "| 선생님 ID(tId):", tId);
+
+        // ✅ 기존 선택된 학생에서 active 클래스 제거
+        document.querySelectorAll(".member-list li").forEach(li => li.classList.remove("active"));
+
+        // ✅ 클릭한 학생에 active 클래스 추가
+        element.classList.add("active");
+
+        // ✅ `sId`(학생)과 `tId`(선생님) 모두 포함된 메시지 불러오기
+        fetch(`/chat/api/history?sId=${sId}&tId=${tId}`)
+            .then(response => response.json())
+            .then(messages => {
+                console.log("[디버깅] 서버 응답 데이터:", messages);
+                const chatMessages = document.getElementById('chatMessages');
+                chatMessages.innerHTML = ''; // 기존 메시지 초기화
+
+                if (Array.isArray(messages)) {
+                    messages.forEach(message => {
+                        let messageClass;
+                        if (String(message.senderName).trim() === String(tId).trim()) {
+                            messageClass = 'self';  // 보낸 메시지 (오른쪽)
+                        } else if (String(message.receiverName).trim() === String(tId).trim()) {
+                            messageClass = 'other'; //  받은 메시지 (왼쪽)
+                        } else {
+                            console.warn("[경고] 필터링되지 않은 메시지:", message);
+                            return; // 잘못된 데이터일 경우 표시하지 않음
+                        }
+
+                        showMessage(message, 'chatMessages', messageClass);
+                    });
+                }
+            })
+            .catch(error => console.error("메시지 로드 오류:", error));
+    }
+
+
+
+</script>
+</body>
+</html>

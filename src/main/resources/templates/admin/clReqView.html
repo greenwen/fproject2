@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>방학_학습신청 상세보기</title>
+</head>
+
+<style>
+    @font-face {
+        font-family: 'NanumGothic';
+        src: url('/static/font/NanumGothic.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    html {
+        overflow-y: scroll; /* 스크롤바 항상 보이기 */
+    }
+
+    body {
+        margin: 0 auto;
+        padding: 0; /* 페이지 양쪽에 20px 여백 추가 */
+
+        box-sizing: border-box; /* 패딩 포함 */
+        font-family: 'NanumGothic', 'Noto Sans KR', monospace, Corbel, Dotum, AppleGothic, Helvetica, sans-serif;
+        color: #333;
+    }
+
+    /* 제목 스타일 */
+    .title {
+        margin-top: 9%;
+        font-size: 24px;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 20px;
+        color: #2c3e50; /* 진한 네이비 계열 */
+    }
+
+    /* 테이블 스타일 */
+    .styled-table {
+        width: 50%;
+        border-collapse: collapse;
+        margin: 20px auto;
+        font-size: 18px;
+        text-align: left;
+        background: #f8fffe;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    /* 테이블 헤더 */
+    .styled-table thead {
+        background: #a3d9b1;
+        color: white;
+    }
+
+    .styled-table th, .styled-table td {
+        padding: 12px;
+        border-bottom: 1px solid #e8e8e8;
+    }
+
+    /* 테이블 행 스타일 */
+    .styled-table tbody tr:nth-child(even) {
+        background: #cce3e0;
+    }
+
+</style>
+
+<body>
+<h1 class="title">< 학습신청 상세 ></h1>
+<table border="1" class="styled-table">
+    <tr>
+        <th>번호</th>
+        <td th:text="${clReq.clReqId}"></td>
+    </tr>
+    <tr>
+        <th>선생님</th>
+        <td th:text="${clReq.tId}"></td>
+    </tr>
+    <tr>
+        <th>과목</th>
+        <td th:text="${clReq.clReqSubject}"></td>
+    </tr>
+    <tr>
+        <th>레벨</th>
+        <td th:text="${clReq.clReqLevel}"></td>
+    </tr>
+    <tr>
+        <th>학부모</th>
+        <td th:text="${clReq.pId}"></td>
+    </tr>
+    <tr>
+        <th>학생</th>
+        <td th:text="${clReq.sId}"></td>
+    </tr>
+    <tr>
+        <th>희망 요일</th>
+        <td th:text="${clReq.clReqDay}"></td>
+    </tr>
+    <tr>
+        <th>장소</th>
+        <td th:text="${clReq.clReqPlace}"></td>
+    </tr>
+
+    <tr>
+        <th>신청일</th>
+        <td th:text="${#temporals.format(clReq.clReqDate, 'yyyy-MM-dd')}"></td>
+    </tr>
+    <tr>
+        <th>상태</th>
+        <td th:text="${clReq.clReqStatus}"></td>
+    </tr>
+</table>
+<br>
+<div style="display: flex; justify-content: center;">
+    <button onclick="location.href='/admin/clReqList'" style="font-size: 16px; background-color: #2c3e50; border-radius: 8px; color: white">목록으로</button>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+<script>
+
+</script>
+</body>
+</html>

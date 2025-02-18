@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>상담 신청 목록</title>
+</head>
+
+<style>
+    @font-face {
+        font-family: 'NanumGothic';
+        src: url('/static/font/NanumGothic.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    html {
+        overflow-y: scroll; /* 스크롤바 항상 보이기 */
+    }
+
+    body {
+        margin: 0 auto;
+        padding: 0; /* 페이지 양쪽에 20px 여백 추가 */
+
+        box-sizing: border-box; /* 패딩 포함 */
+        font-family: 'NanumGothic', 'Noto Sans KR', monospace, Corbel, Dotum, AppleGothic, Helvetica, sans-serif;
+        color: #333;
+    }
+
+    /* 제목 스타일 */
+    .title {
+        margin-top: 9%;
+        font-size: 24px;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 20px;
+        color: #2c5039; /* 진한 네이비 계열 */
+    }
+
+    /* 테이블 스타일 */
+    .styled-table {
+        width: 50%;
+        border-collapse: collapse;
+        margin: 20px auto;
+        font-size: 18px;
+        text-align: left;
+        background: #f8fffe;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    /* 테이블 헤더 */
+    .styled-table thead {
+        background: #73ad81;
+        color: white;
+    }
+
+    .styled-table th, .styled-table td {
+        padding: 12px;
+        border-bottom: 1px solid #e8e8e8;
+    }
+
+    /* 테이블 행 스타일 */
+    .styled-table tbody tr:nth-child(even) {
+        background: #cce3e0;
+    }
+
+</style>
+
+<body>
+<h1 class="title">< 상담 신청 목록 ></h1>
+<table border="1" class="styled-table">
+    <thead>
+    <tr>
+        <th>번호</th>
+        <th>이름</th>
+        <th>연락처</th>
+        <th>이메일</th>
+        <th>상담 유형</th>
+        <th>상태</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="signup : ${signupList}">
+        <td>
+            <a th:href="@{/signup/view/{sReqId}(sReqId=${signup.sReqId})}" th:text="${signup.sReqId}"></a>
+        </td>
+        <td th:text="${signup.sReqName}"></td>
+        <td th:text="${signup.sReqPhone}"></td>
+        <td th:text="${signup.sReqEmail}"></td>
+        <td th:text="${signup.sReqType}"></td>
+        <td th:text="${signup.sReqStatus}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

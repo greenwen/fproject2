@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="shortcut icon" href="/favicon/favicon.ico" type="image/x-icon">
+
+  <style>
+    @font-face {
+      font-family: 'NanumGothic';
+      src: url('/static/font/NanumGothic.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    html {
+      overflow-y: scroll; /* 스크롤바 항상 보이기 */
+    }
+
+    body {
+      margin: 0 auto;
+      padding: 0;
+
+      box-sizing: border-box; /* 패딩 포함 */
+      font-family: 'NanumGothic', 'Noto Sans KR', monospace, Corbel, Dotum, AppleGothic, Helvetica, sans-serif;
+      color: #333;
+    }
+
+    /* 제목 스타일 */
+    .title {
+      margin-top: 9%;
+      font-size: 24px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 20px;
+      color: #2c3e50; /* 진한 네이비 계열 */
+    }
+
+    /* 테이블 스타일 */
+    .styled-table {
+      width: 50%;
+      border-collapse: collapse;
+      margin: 20px auto;
+      font-size: 18px;
+      text-align: left;
+      background: #f8fffe;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    /* 테이블 헤더 */
+    .styled-table thead {
+      background: #2c3e50;
+      color: white;
+    }
+
+    .styled-table th, .styled-table td {
+      padding: 12px;
+      border-bottom: 1px solid #e8e8e8;
+    }
+
+    /* 테이블 행 스타일 */
+    .styled-table tbody tr:nth-child(even) {
+      background: #cce3e0;
+    }
+
+  </style>
+  <title>선생님 관리</title>
+</head>
+
+<body>
+<!--TODO: 선생님 누르면 모달로 정보 띄우기-->
+<!--TODO: 확인 수정/자격증 삭제 기능 넣기-->
+<h1 class="title">< 자격 인증 관리 ></h1>
+<table class="styled-table">
+  <thead>
+  <tr>
+    <th>선생님 ID</th>
+    <th>자격증 종류</th>
+    <th>과목</th>
+    <th>학년 및 레벨</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="teacher : ${teacherList}">
+    <td><a th:href="@{/modTForm/{tId}(tId=${teacher.tId})}" th:text="${teacher.tId}"></a></td>
+    <td th:text="${teacher.tName}"></td>
+    <td id="specStatus" th:value="${teacher.tSubject}" th:text="${teacher.tSubject}"></td>
+    <td>
+      [[${teacher.tGrade}]] &nbsp; / &nbsp;[[${teacher.tLevel}]]
+    </td>
+  </tr>
+  </tbody>
+</table>
+</body>
+
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+<script>
+
+  $('#delete').click(() => {
+    let specStatus = $('#specStatus').val();
+    let tSid = $('#tSid').val();
+
+    console.log(specStatus);
+    // $.ajax({
+    //     url: '/teacher/spec/delete',
+    //     type: 'post',
+    //     data: {tSid: tSid},
+    //     success: function (data) {
+    //         if (data.result === 'success') {
+    //             alert('삭제 성공');
+    //             location.reload();
+    //         } else {
+    //             alert('삭제 실패');
+    //         }
+    //     }
+    // });
+  });
+</script>
+
+</html>

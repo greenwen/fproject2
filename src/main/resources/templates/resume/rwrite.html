@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="shortcut icon" href="/favicon/favicon.ico" type="image/x-icon">
+    <title>입사지원서 작성</title>
+</head>
+
+<style>
+    body {
+        background: #fff;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        min-height: 100vh; /* 최소 높이를 화면 높이에 맞춤 */
+        display: flex;
+        align-items: center;
+    }
+
+    h1 {
+        position: absolute; /* 절대 위치를 사용 */
+        top: 0; /* 상단에 위치 */
+        left: 50%; /* 수평으로 중앙 정렬 시작 */
+        transform: translateX(-50%); /* 중앙 정렬 완료 */
+        text-align: center; /* 텍스트 정렬 */
+        margin: 0px;
+    }
+
+    form {
+        margin: 50px auto;
+        width: 70%;
+        max-width: 700px;
+        padding: 20px;
+        background: linear-gradient(rgba(59, 190, 234, 0.51), rgba(177, 228, 255, 0.56));
+        border-radius: 8px;
+        box-shadow: 0 4px 10px white;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        overflow: hidden; /* 테두리 안쪽의 둥근 모서리 처리 */
+    }
+
+    th, td {
+        background-color: white;
+        color: #333;
+        border-right: 1px solid lightgrey;
+        padding: 10px;
+    }
+
+    td {
+        text-align: center; /* 텍스트 중앙 정렬 */
+        vertical-align: middle; /* 수직 중앙 정렬 */
+    }
+
+    .align-left {
+        text-align: left; /* 가로 정렬 왼쪽 */
+        padding-left: 36px;
+    }
+
+    #head th {
+        background-color: white;
+        border-bottom: 2px solid lightgrey;
+        border-right: 1px solid lightgrey; /* 세로 줄 추가 */
+        padding: 10px;
+    }
+
+    #head th:last-child {
+        border-right: none; /* 마지막 열은 세로 줄 제거           */
+    }
+
+    /* 오른쪽 끝의 연두색 세로선 제거 */
+    td:last-child, th:last-child {
+        border-right: none; /* 마지막 열의 세로선 제거 */
+    }
+
+    th:last-child {
+        border-bottom: none;
+    }
+
+    th, td input, td span {
+        font-size: 16px;
+    }
+
+    #resCoverLetter {
+        width: 88%;
+        height: 180px;
+    }
+
+    input[type="text"], input[type="password"], input[type="email"], input[type="button"] {
+        width: 90%;
+        padding: 8px;
+        margin: 5px 0;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-sizing: border-box;
+        background-color: #eafcea;
+    }
+
+    input[type="button"] {
+        background-color: #8dceec;
+        color: white;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    input[type="button"]:hover {
+        background-color: #5ea0d7;
+    }
+
+    /* 버튼 행 스타일 */
+    div {
+        background-color: rgba(255, 0, 0, 0);
+        display: flex; /* 플렉스 박스 사용 */
+        justify-content: center; /* 버튼을 가로 중앙 정렬 */
+        gap: 20px; /* 버튼 간 간격 */
+        text-align: center; /* 내부 요소 중앙 정렬 */
+    }
+
+    /* 버튼 스타일 유지 */
+    button[type="submit"],
+    button[type="reset"] {
+        background-color: #bce9c3; /* 버튼 배경색 */
+        border: 1px solid #ddd; /* 테두리 */
+        padding: 10px 20px; /* 버튼 내부 여백 */
+        font-size: 16px; /* 버튼 글씨 크기 */
+        cursor: pointer; /* 포인터 커서 */
+        border-radius: 30px; /* 둥근 모서리 */
+        transition: background-color 0.3s ease; /* 배경색 전환 효과 */
+    }
+
+    button[type="submit"]:hover,
+    button[type="reset"]:hover {
+        background-color: #228B22; /* 호버 시 배경색 */
+        color: white;
+    }
+</style>
+
+
+<body>
+<h1>입사지원서</h1>
+<form action="/resume/submit" method="POST" enctype="multipart/form-data" name="resumeForm">
+    <table>
+        <tr id="head">
+            <th>항목</th>
+            <th>내용</th>
+        </tr>
+        <tr>
+            <th>이름</th>
+            <td><input type="text" id="resName" name="resName" required/></td>
+        </tr>
+
+        <tr>
+            <th>비밀번호</th>
+            <td><input type="password" id="resPass" name="resPass" required/></td>
+        </tr>
+        <tr>
+            <th>나이</th>
+            <td class="align-left"><input type="number" id="resAge" name="resAge" min="20" max="100" required/></td>
+        </tr>
+        <tr>
+            <th>연락처</th>
+            <td><input type="text" id="resPhone" name="resPhone" placeholder="010-0000-0000" required/></td>
+        </tr>
+        <tr>
+            <th>이메일</th>
+            <td>
+                <input type="email" id="resEmail" name="resEmail"/>
+                <span id="check4">
+                    <input type="button" value="인증번호 발송" id="checkEmail"/>
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <th>이력서 파일</th>
+            <td><input type="file" id="resFile" name="resFile" accept=".pdf,.doc,.docx" required/></td>
+        </tr>
+        <tr>
+            <th>자기소개서</th>
+            <td><textarea id="resCoverLetter" name="resCoverLetter" rows="6" required></textarea></td>
+        </tr>
+    </table>
+    <div>
+        <button type="submit">제출</button>
+        <button type="reset">초기화</button>
+    </div>
+</form>
+
+<!-- jQuery 추가 -->
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+        crossorigin="anonymous"></script>
+
+<script>
+    // 이메일 인증하기
+    let resEmail = $('#resEmail');
+    let checkEmail = $('#checkEmail');
+    let check4 = $('#check4');
+    let check_email = false;
+
+    // ajax 사용해서 이메일 전송 및 인증번호 받아오기
+    checkEmail.click(() => {
+        if (!resEmail.val()) {
+            alert('이메일을 입력해주세요.');
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: "/resume/emailCheck",
+            data: {"resEmail": resEmail.val()},
+            dataType: "text",
+            success: (uuid) => {
+                console.log(uuid);
+                check4.empty();
+                check4.append(`<input type="text" id="uuid1" size="25"/>`);
+                check4.append(`<input type="button" value="인증" id="btnUUID" data-value="${uuid}"/>`);
+            },
+            error: () => {
+                alert('emailCheck 통신 실패');
+            }
+        });
+    });
+
+    // 인증번호 확인하기
+    $(document).on('click', '#btnUUID', function () {
+        let uuid = $(this).data("value");
+        let uuid1 = $('#uuid1').val();
+
+        if (!uuid1) {
+            alert('인증번호를 입력해주세요.');
+            return;
+        }
+
+        if (uuid == uuid1) {
+            alert('이메일이 인증되었습니다.');
+            check4.hide();
+            resEmail.attr('readonly', true);
+            check_email = true;
+        } else {
+            alert('인증번호가 올바르지 않습니다. 다시 확인해주세요.');
+            $('#uuid1').val("");
+            check_email = false;
+        }
+    });
+
+</script>
+</body>
+</html>

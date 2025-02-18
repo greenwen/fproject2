@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>이력서 상세보기</title>
+</head>
+<style>
+  body{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+</style>
+<body>
+<h1>이력서 상세 보기</h1>
+<table border="1">
+  <tr>
+    <th>번호</th>
+    <td th:text="${resume.resId}"></td>
+  </tr>
+  <tr>
+    <th>이름</th>
+    <td th:text="${resume.resName}"></td>
+  </tr>
+  <tr>
+    <th>이메일</th>
+    <td th:text="${resume.resEmail}"></td>
+  </tr>
+  <tr>
+    <th>입사 지원 동기</th>
+    <td th:text="${resume.resCoverLetter}"></td>
+  </tr>
+
+  <tr>
+    <th>파일 다운로드</th>
+    <td>
+      <a th:href="@{'/upload/resume/' + ${resume.resFileName}}" target="_blank" th:text="${resume.resFileName}"></a>
+    </td>
+  </tr>
+
+  <tr>
+    <th>상태</th>
+    <td th:text="${resume.resStatus}"></td>
+  </tr>
+</table>
+<br>
+<button onclick="location.href='/resume/list'">목록으로 돌아가기</button>
+</body>
+</html>

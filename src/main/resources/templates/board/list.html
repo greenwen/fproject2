@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>문의 목록</title>
+    <link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-gothic.css" rel="stylesheet">
+</head>
+<style>
+    html {
+        overflow-y: scroll; /* 스크롤바 항상 보이기 */
+    }
+
+    body {
+        margin: 0 auto;
+        padding: 0; /* 페이지 양쪽에 20px 여백 추가 */
+
+        box-sizing: border-box; /* 패딩 포함 */
+        font-family: 'Nanum Gothic', sans-serif;
+        color: #333;
+    }
+
+    /* 제목 스타일 */
+    .title {
+        font-size: 24px;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 20px;
+        /*color: #2c5039;*/
+    }
+
+    /* 테이블 스타일 */
+    .styled-table {
+        width: 50%;
+        border-collapse: collapse;
+        margin: 20px auto;
+        font-size: 18px;
+        text-align: left;
+        background: #ffe8e8;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    /* 테이블 헤더 */
+    .styled-table thead {
+        background: #e56f6f;
+        color: white;
+    }
+
+    .styled-table th, .styled-table td {
+        padding: 12px;
+        border-bottom: 1px solid #e8e8e8;
+    }
+
+    /* 테이블 행 스타일 */
+    .styled-table tbody tr:nth-child(even) {
+        background: #efd2d2;
+    }
+
+    .write-button {
+        margin-left: 47%;
+        background-color: #f17c7c;
+        color: white;
+        padding: 7px 10px;
+        border-radius: 8px;
+    }
+
+    .btnLink, .deleteB {
+        display: inline-block;
+        padding: 3px 10px;
+        background-color: #3d3d3d;
+        color: white;
+        text-align: center;
+        font-size: 12px;
+        border-radius: 30px;
+        text-decoration: none;  /* 링크 기본 밑줄 제거 */
+        font-weight: bold;
+        transition: background-color 0.3s;
+    }
+
+    .btnLink:hover, .deleteB:hover {
+        background-color: #9b4d96;
+    }
+</style>
+<body>
+<h2 class="title">< 문의 목록 ></h2>
+<table border="1" class="styled-table">
+    <thead>
+    <tr>
+        <th>번호</th>
+        <th>제목</th>
+        <th>작성자</th>
+        <th>작성일</th>
+        <th>분류</th>
+        <th>답변 상태</th>
+        <th>상세보기</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="board : ${boardList}">
+        <td th:text="${board.qId}"></td>
+        <td th:text="${board.qTitle}"></td>
+        <td th:text="${board.qWriter}"></td>
+        <td th:text="${#temporals.format(board.qDate, 'yyyy-MM-dd')}"></td>
+        <td th:text="${board.qCategory}"></td>
+        <td th:text="${board.qStatus}"></td>
+        <td>
+            <a class="btnLink" th:href="@{/board/view/{qId}(qId=${board.qId})}">보기</a>
+            <p class="deleteB" th:data-qid="${board.qId}">삭제</p>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<br>
+</body>
+<script>
+
+    $(document).ready(() => {
+        $(".deleteB").click(function () {
+            let qId = $(this).data("qid"); // Get qId from data attribute
+
+            if (!qId) {
+                alert("삭제할 게시글을 찾을 수 없습니다.");
+                return;
+            }
+
+            if (confirm("게시글을 삭제하시겠습니까?")) {
+                $.ajax({
+                    url: `/board/delete/${qId}`,
+                    type: "DELETE",
+                    dataType: "json",
+                    success: function (result) {
+                        if (result.success) {
+                            alert("게시글 삭제 성공");
+                            location.reload();
+                        } else {
+                            alert("게시글 삭제 실패");
+                        }
+                    },
+                    error: function (xhr, status, error){
+                        console.log("AJAX Error:", xhr.responseText); // 디버깅중
+                        alert("삭제 요청 중 오류가 발생했습니다.");
+                    }
+                });
+            }
+        });
+    });
+
+</script>
+</html>

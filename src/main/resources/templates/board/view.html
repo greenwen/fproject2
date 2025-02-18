@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>문의 상세보기</title>
+    <link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-gothic.css" rel="stylesheet">
+</head>
+
+<style>
+    html {
+        overflow-y: scroll; /* 스크롤바 항상 보이기 */
+    }
+
+    body {
+        margin: 0 auto;
+        padding: 0; /* 페이지 양쪽에 20px 여백 추가 */
+        box-sizing: border-box; /* 패딩 포함 */
+        font-family: 'Nanum Gothic', sans-serif;
+        color: #333;
+    }
+
+    /* 제목 스타일 */
+    .title {
+        font-size: 24px;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 20px;
+        /*color: #2c5039;*/
+    }
+
+    /* 테이블 스타일 */
+    .styled-table {
+        width: 50%;
+        border-collapse: collapse;
+        margin: 20px auto;
+        font-size: 18px;
+        text-align: left;
+        background: #ffe8e8;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    /* 테이블 헤더 */
+    .styled-table thead {
+        background: #e56f6f;
+        color: white;
+    }
+
+    .styled-table th, .styled-table td {
+        padding: 12px;
+        border-bottom: 1px solid #e8e8e8;
+    }
+
+    /* 테이블 행 스타일 */
+    .styled-table tbody tr:nth-child(even) {
+        background: #efd2d2;
+    }
+
+    /*!* 테이블 행 hover 효과 *!*/
+    /*.styled-table tbody tr:hover {*/
+    /*    background: #ecc7d1;*/
+    /*}*/
+
+    /* 링크 스타일 */
+    .styled-table a {
+        text-decoration: none;
+        color: #5fcbbf;
+        font-weight: bold;
+    }
+
+    .styled-table a:hover {
+        color: #e34c4c;
+    }
+
+    .write-button {
+        margin-left: 47%;
+        background-color: #f17c7c;
+        color: white;
+        padding: 7px 10px;
+        border-radius: 8px;
+    }
+
+    .QNAnswer {
+        list-style-type: none; /* 리스트 기호 제거 */
+        padding: 0;
+        margin: 20px auto; /* 중앙 정렬 */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 70%; /* .styled-table과 동일한 너비 */
+        box-sizing: border-box;
+    }
+
+    .QNAnswer .answer-item {
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        margin: 5px 0;
+        padding: 12px;
+        width: 90%; /* 고정된 크기 설정 */
+        max-width: 820px; /* 최대 너비 설정 */
+        min-width: 820px; /* 최소 너비 설정 */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        word-wrap: break-word; /* 긴 단어 줄바꿈 */
+        text-align: left; /* 텍스트 정렬 */
+    }
+
+    .QNAnswer .answer-item p {
+        margin: 3px 0;
+        font-size: 16px;
+        line-height: 1.6;
+        color: #555;
+        word-break: break-word; /* 긴 단어가 영역을 넘어가지 않도록 */
+    }
+
+    .QNAnswer .answer-item p b {
+        color: #e56f6f;
+        font-weight: bold;
+    }
+
+    .QNAnswer .answer-item p span {
+        color: #333; /* 텍스트 색상 */
+    }
+
+    .QNAnswer .answer-item p b + span {
+        color: #666; /* 내용 부분 텍스트 색상 */
+    }
+
+    .QNAreturn {
+        text-decoration: none;
+        margin-left: 45.8%;
+        color: white;
+        background-color: #f17c7c;
+        border-radius: 8px;
+        padding: 7px 10px;
+    }
+
+    #showAnswerFormBtn {
+        display: block;
+        margin: 20px auto; /* 버튼을 가로 중앙에 배치 */
+        padding: 8px 20px;
+        background-color: #e56f6f;
+        color: white;
+        border: none;
+        border-radius: 30px;
+        cursor: pointer;
+    }
+
+    #answerForm {
+        background: #efd2d2;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        max-width: 800px;
+        margin: 20px auto;
+        font-family: 'Nanum Gothic', sans-serif;
+    }
+
+    #answerForm textarea {
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+        border: 1px solid #e56f6f;
+        font-family: 'Nanum Gothic', sans-serif;
+        border-radius: 8px;
+        box-sizing: border-box;
+        resize: none;
+        margin-bottom: 20px;
+        transition: border 0.3s ease;
+    }
+
+    #answerForm textarea[name="ansContents"]:focus {
+        border-color: #e56f6f;
+        box-shadow: 0 0 5px rgba(229, 111, 111, 0.6);
+    }
+
+    #answerForm button {
+        background-color: #e56f6f;
+        color: white;
+        padding: 8px 20px;
+        font-size: 16px;
+        border: none;
+        border-radius: 30px;
+        cursor: pointer;
+        width: auto;
+        margin: 0 auto;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        text-align: left;
+    }
+
+    #answerForm button:hover {
+        background-color: #d75a5a;
+        transform: scale(1.05);
+    }
+</style>
+
+<body>
+<h2 class="title">< 문의 상세보기 ></h2>
+<table border="1" class="styled-table">
+    <tr>
+        <th>제목</th>
+        <td th:text="${board.qTitle}"></td>
+    </tr>
+    <tr>
+        <th>번호</th>
+        <td th:text="${board.qId}"></td>
+    </tr>
+    <tr>
+        <th>작성자</th>
+        <td th:text="${board.qWriter}"></td>
+    </tr>
+    <tr>
+        <th>내용</th>
+        <td th:text="${board.qContents}"></td>
+    </tr>
+    <tr>
+        <th>작성일</th>
+        <td th:text="${#temporals.format(board.qDate, 'yyyy-dd-mm')}"></td>
+    </tr>
+
+</table>
+
+<h3 class="title">답변 내역</h3>
+<ul th:if="${answers.size() > 0}" class="QNAnswer">
+    <li th:each="answer : ${answers}">
+        <div class="answer-item">
+            <p><b>작성자:</b> <span th:text="${answer.aId}"></span></p>
+            <p><b>내용:</b> <span th:text="${answer.ansContents}"></span></p>
+            <p><b>작성일:</b> <span th:text="${#temporals.format(answer.ansDate, 'yyyy-dd-mm')}"></span></p>
+        </div>
+    </li>
+</ul>
+<p th:if="${answers.size() == 0}" class="QNAnswer">답변이 없습니다.</p>
+
+<div th:if="${session.adminLoginId != null}">
+    <!-- 답변 작성 버튼 (항상 표시) -->
+    <button id="showAnswerFormBtn">답변 작성</button>
+
+    <!-- 답변 작성 폼 (처음에는 숨겨진 상태) -->
+    <form id="answerForm" th:action="@{/board/answer}" method="post" style="display: none;">
+        <input type="hidden" name="qId" th:value="${board.qId}">
+        <textarea name="ansContents" rows="4" cols="50" placeholder="답변 내용을 입력하세요"></textarea><br>
+        <button type="submit">답변 등록</button>
+    </form>
+</div>
+<!--    <p th:if="${session.admin == null}" class="QNAnswer">관리자만 답변을 작성할 수 있습니다.</p>-->
+<br>
+<div th:switch="${session.adminLoginId}">
+    <div th:case="null">
+        <a th:href="@{/board/myfaq/{loginId}(loginId=${board.qWriter})}" class="QNAreturn">목록으로 돌아가기</a>
+    </div>
+    <div th:case="*">
+        <a href="/board/list" class="QNAreturn">목록으로 돌아가기</a>
+    </div>
+</div>
+</body>
+
+<script>
+    // 답변 작성하기 버튼 클릭 시 폼 표시
+    document.getElementById("showAnswerFormBtn").addEventListener("click", function() {
+        var form = document.getElementById("answerForm");
+        if (form.style.display === "none" || form.style.display === "") {
+            form.style.display = "block"; // 폼을 보이게 설정
+        } else {
+            form.style.display = "none"; // 폼을 숨기기
+        }
+    });
+</script>
+</html>

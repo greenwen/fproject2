@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--    <link rel="stylesheet" href="/css/style.css">-->
+    <link rel="shortcut icon" href="/favicon/favicon.ico" type="image/x-icon">
+
+    <title>관리자 로그인</title>
+</head>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        background: linear-gradient(rgba(124, 220, 124, 0.61), rgba(23, 164, 22, 0.61));
+        margin: 0;
+        padding: 0;
+        height: 100vh; /* 화면 높이에 맞춤 */
+        display: flex;
+        justify-content: center; /* 가로 방향 중앙 정렬 */
+        align-items: center;
+    }
+
+    .container {
+        padding: 60px 90px;
+        width: 100%;
+        max-width: 600px;
+        background: white;
+        border-radius: 800px;
+        box-shadow: 0 4px 6px white;
+        display: flex;
+        flex-direction: column; /* 세로로 정렬 */
+        align-items: center; /* 버튼들이 가로로 중앙 정렬 */
+    }
+
+    .container h2 {
+        font-weight: bold;
+        text-align: center;
+        border-bottom: 3px solid #73de73;
+        margin-bottom: 30px; /* 제목 아래 여백 */
+        padding-bottom: 10px; /* 밑줄과의 간격 */
+    }
+
+    input[type="text"], input[type="password"] {
+        width: 100%;
+        max-width: 400px;
+        padding: 10px;
+        margin: 5px 0;
+        border: 1px solid #8dceec;
+        border-radius: 5px;
+    }
+
+    input[type="submit"] {
+        width: 50%;
+        max-width: 400px;
+        padding: 10px;
+        margin: 3px 0;
+        border-radius: 5px;
+        box-sizing: border-box;
+        background-color: #73de73;
+        color: white;
+        border: none;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    input[type="submit"]:hover {
+        background-color: #59b658;
+    }
+
+</style>
+
+<body>
+<form action="aLogin" method="post">
+    <div class="container">
+        <h2>관리자 로그인</h2>
+        <label>ID : <input type="text" name="aId" /></label><br/>
+        <label>PW : <input type="password" name="aPass" /></label><br/>
+        <input type="submit" value="로그인">
+    </div>
+</form>
+</body>
+
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+<script>
+
+</script>
+
+</html>

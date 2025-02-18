@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>상담 신청 상세보기</title>
+</head>
+<body>
+<h1>상담 신청 상세 보기</h1>
+<table border="1">
+    <tr>
+        <th>번호</th>
+        <td th:text="${signup.sReqId}"></td>
+    </tr>
+    <tr>
+        <th>이름</th>
+        <td th:text="${signup.sReqName}"></td>
+    </tr>
+    <tr>
+        <th>연락처</th>
+        <td th:text="${signup.sReqPhone}"></td>
+    </tr>
+    <tr>
+        <th>이메일</th>
+        <td th:text="${signup.sReqEmail}"></td>
+    </tr>
+    <tr>
+        <th>상담 유형</th>
+        <td th:text="${signup.sReqType}"></td>
+    </tr>
+    <tr>
+        <th>상담 가능 시간대</th>
+        <td th:text="${signup.sReqStartTime} + '시 ~ ' + ${signup.sReqEndTime} + '시'"></td>
+<!--        <td>~</td>-->
+<!--        <td th:text="${signup.sReqEndTime}"></td>-->
+    </tr>
+    <tr>
+        <th>상태</th>
+        <td th:text="${signup.sReqStatus}"></td>
+    </tr>
+</table>
+<br>
+<button onclick="location.href='/signup/list'">목록으로 돌아가기</button>
+</body>
+</html>
