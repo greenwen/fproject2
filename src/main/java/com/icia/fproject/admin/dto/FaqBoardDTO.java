@@ -3,7 +3,6 @@ package com.icia.fproject.admin.dto;
 import lombok.Data;
 
 import java.time.Instant;
-// TODO: 학부모/선생님 문의사항 분리
 @Data
 public class FaqBoardDTO {
 

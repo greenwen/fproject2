@@ -50,8 +50,6 @@ public class ResumeRequestEntity {
     @Column(name = "RESSTATUS")
     private String resStatus;       // 입사지원서 확인 상태
 
-    // TODO: 맡을/희망 과목 및 희망 연령대 추가하기
-
 
     public static ResumeRequestEntity toEntity(ResumeRequestDTO dto) {
         ResumeRequestEntity entity = new ResumeRequestEntity();

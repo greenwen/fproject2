@@ -20,17 +20,14 @@ public class SignupRequestEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // 자동생성 수정
     private Long sReqId;        // 상담 신청서 ID
 
-    // TODO: 학부모 로그인 할 거면 제거
     @Nationalized
     @Column(name = "SREQNAME", length = 100)
     private String sReqName;    // 신청자명
 
-    // TODO: 학부모 로그인 할 거면 제거
     @Nationalized
     @Column(name = "SREQPHONE", length = 20)
     private String sReqPhone;   // 연락처
 
-    // TODO: 학부모 로그인 할 거면 제거
     @Nationalized
     @Column(name = "SREQEMAIL", length = 100)
     private String sReqEmail;   // 이메일
@@ -63,9 +60,9 @@ public class SignupRequestEntity {
         SignupRequestEntity entity = new SignupRequestEntity();
 
         entity.setSReqId(dto.getSReqId());
-        entity.setSReqName(dto.getSReqName());   // TODO: 학부모 넣을시 제거
-        entity.setSReqPhone(dto.getSReqPhone()); // TODO: 학부모 넣을시 제거
-        entity.setSReqEmail(dto.getSReqEmail()); // TODO: 학부모 넣을시 제거
+        entity.setSReqName(dto.getSReqName());
+        entity.setSReqPhone(dto.getSReqPhone());
+        entity.setSReqEmail(dto.getSReqEmail());
         entity.setSReqType(dto.getSReqType());
         entity.setSReqStartTime(dto.getSReqStartTime());
         entity.setSReqEndTime(dto.getSReqEndTime());

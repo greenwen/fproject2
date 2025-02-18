@@ -8,7 +8,6 @@ import org.hibernate.annotations.Nationalized;
 import java.time.Instant;
 import java.util.LinkedHashSet;
 import java.util.Set;
-// TODO: 선생님 문의/학부모 문의 나누기
 @Data
 @Entity
 @Table(name = "FAQ_BOARD")

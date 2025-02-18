@@ -8,9 +8,9 @@ import java.time.LocalDate;
 public class SignupRequestDTO {
 
     private Long sReqId;                // 상담 신청서 id
-    private String sReqName;            // 상담 신청자 성함 //TODO : 학부모 넣을시 제거
-    private String sReqPhone;           // 신청자 연락처    //TODO : 학부모 넣을시 제거
-    private String sReqEmail;           // 신청자 이메일    //TODO : 학부모 넣을시 제거
+    private String sReqName;            // 상담 신청자 성함
+    private String sReqPhone;           // 신청자 연락처
+    private String sReqEmail;           // 신청자 이메일
     private String sReqType;            // 원하는 상담 유형
     private LocalDate sReqDate;         // 상담 가능한 날짜
     private Long sReqStartTime;         // 상담 가능 시간대 (시작)
@@ -23,9 +23,9 @@ public class SignupRequestDTO {
         SignupRequestDTO dto = new SignupRequestDTO();
 
         dto.setSReqId(entity.getSReqId());
-        dto.setSReqName(entity.getSReqName());      //TODO : 학부모 넣을시 제거
-        dto.setSReqPhone(entity.getSReqPhone());    //TODO : 학부모 넣을시 제거
-        dto.setSReqEmail(entity.getSReqEmail());    //TODO : 학부모 넣을시 제거
+        dto.setSReqName(entity.getSReqName());
+        dto.setSReqPhone(entity.getSReqPhone());
+        dto.setSReqEmail(entity.getSReqEmail());
         dto.setSReqType(entity.getSReqType());
         dto.setSReqDate(entity.getSReqDate());
         dto.setSReqStartTime(entity.getSReqStartTime());

@@ -9,7 +9,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.Instant;
 
-// TODO: 학부모/선생님 문의사항 답변 분리
+
 @Data
 @Entity
 @Table(name = "FAQ_ANSWER")

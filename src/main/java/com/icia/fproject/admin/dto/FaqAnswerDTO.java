@@ -4,7 +4,6 @@ import lombok.Data;
 
 import java.time.Instant;
 
-// TODO: 학부모/선생님 문의사항 답변 분리
 @Data
 public class FaqAnswerDTO {
     private Long ansId;             // 답변 id

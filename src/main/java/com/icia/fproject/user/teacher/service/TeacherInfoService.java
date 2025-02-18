@@ -96,8 +96,7 @@ public class TeacherInfoService {
         return mav;
     }
 
-    // 선생님 로그인
-    //TODO: 로그인 실패시 예외처리
+
     public ModelAndView tLogin(TeacherInfoDTO teacher) {
 
         System.out.println("[2] controller → service || teacher : " + teacher);

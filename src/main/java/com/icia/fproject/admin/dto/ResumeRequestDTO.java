@@ -19,8 +19,6 @@ public class ResumeRequestDTO {
     private String resCoverLetter;  // 자소서 OR 입사동기 (페이지에 직접 입력)
     private String resStatus;       // 지원서 확인 상태
 
-    // TODO: 맡을/희망 과목 및 희망 연령대 추가하기
-
     public static ResumeRequestDTO toDTO(ResumeRequestEntity entity) {
         ResumeRequestDTO dto = new ResumeRequestDTO();
 
